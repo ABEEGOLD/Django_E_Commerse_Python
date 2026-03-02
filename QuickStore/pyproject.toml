@@ -9,5 +9,6 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.1",
     "djoser>=2.3.3",
     "drf-nested-routers>=0.95.0",
+    "mysql>=0.0.3",
     "mysqlclient>=2.2.7",
 ]

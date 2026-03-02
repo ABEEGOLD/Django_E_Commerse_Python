@@ -19,7 +19,7 @@ from django.urls import path, include
 
 
 admin.site.site_header = "QuickStore Administration"
-admin.site.index_title = "Quick Store Administration page"
+admin.site.index_title = "Quick  Store Administration page"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("store.urls")),

@@ -1,7 +1,10 @@
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
-from rest_framework import viewsets
-from .models import Product, Review, Cart
-from .serializers import ProductSerializer, ReviewSerializer, cartSerializer, CartItemSerializer
+from rest_framework import viewsets, status
+from .models import Product, Review, Cart, CartItem, Order
+from .serializers import ProductSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, \
+    UpdateCartItemSerializer, OrderSerializer, CreateOrderSerializer
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
 
 
@@ -11,6 +14,12 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyM
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -26,22 +35,53 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 
-class CartViewSet(CreateModelMixin,RetrieveModelMixin,GenericViewSet):
+class CartViewSet(CreateModelMixin,RetrieveModelMixin,DestroyModelMixin,GenericViewSet):
     queryset = Cart.objects.all()
-    serializer_class = cartSerializer
+    serializer_class = CartSerializer
 
 
 
 class CartItemViewSet(viewsets.ModelViewSet):
-    serializer_class = CartItemSerializer
 
+    http_method_names = ['get','post','patch','delete']
+
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AddCartItemSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateCartItemSerializer
+        return CartItemSerializer
 
     def get_queryset(self):
-        return Cart.objects.filter(product=self.kwargs['cart_pk'])
+        return CartItem.objects.filter(cart=self.kwargs['cart_pk'])
 
 
+    def get_serializer_context(self):
+        return {"cart_id": self.kwargs['cart_pk']}
 
 
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        return OrderSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data, context={'user_id': self.request.user.id})
+        serializer.is_valid(raise_exception=True)
+        Order = serializer.save()
+        serializer = OrderSerializer(Order)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_serializer_context(self):
+        return {'user_id': self.request.user.id}
 
 
     # Create your views here.

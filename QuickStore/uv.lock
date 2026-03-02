@@ -249,6 +249,18 @@ wheels = [
 ]
 
 [[package]]
+name = "mysql"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mysqlclient" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/3c/943f6734849a6aed97d83af689ce7096927b52465df7bccfbcb45a7e7d14/mysql-0.0.3.tar.gz", hash = "sha256:fd7bae7d7301ce7cd3932e5ff7f77bbc8e34872108252866e08d16d6b8e8de8c", size = 2037, upload-time = "2021-05-25T19:52:16.818Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9a/52/8d29c58f6ae448a72fbc612955bd31accb930ca479a7ba7197f4ae4edec2/mysql-0.0.3-py3-none-any.whl", hash = "sha256:8893cb143a5ac525c49ef358a23b8a0dc9721a95646f7bab6ca2f384c18a6a9a", size = 1237, upload-time = "2021-05-25T19:52:15.462Z" },
+]
+
+[[package]]
 name = "mysqlclient"
 version = "2.2.7"
 source = { registry = "https://pypi.org/simple" }
@@ -311,6 +323,7 @@ dependencies = [
     { name = "djangorestframework-simplejwt" },
     { name = "djoser" },
     { name = "drf-nested-routers" },
+    { name = "mysql" },
     { name = "mysqlclient" },
 ]
 
@@ -321,6 +334,7 @@ requires-dist = [
     { name = "djangorestframework-simplejwt", specifier = ">=5.5.1" },
     { name = "djoser", specifier = ">=2.3.3" },
     { name = "drf-nested-routers", specifier = ">=0.95.0" },
+    { name = "mysql", specifier = ">=0.0.3" },
     { name = "mysqlclient", specifier = ">=2.2.7" },
 ]
 
